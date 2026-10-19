@@ -53,6 +53,13 @@ class AppCategoryDetectorTest {
     }
 
     @Test
+    fun telegramXUsesItsExactOfficialPackageIdentity() {
+        assertEquals(AppCategory.MESSAGING, AppCategoryDetector.detect("org.thunderdog.challegram", "Telegram X"))
+        assertEquals(AppCategory.MESSAGING, AppCategoryDetector.detect("ORG.THUNDERDOG.CHALLEGRAM"))
+        assertEquals(AppCategory.USER_APP, AppCategoryDetector.detect("org.thunderdog.challegram.fake"))
+    }
+
+    @Test
     fun testDetectBrowsers() {
         assertEquals(
             AppCategory.BROWSER,

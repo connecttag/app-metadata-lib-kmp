@@ -14,6 +14,7 @@ public object AppClassificationCatalog {
         "com.whatsapp",
         "com.whatsapp.w4b",
         "org.telegram.messenger",
+        "org.thunderdog.challegram",
         "org.telegram.plus",
         "org.thoughtcrime.securesms",
         "com.facebook.orca",
@@ -151,10 +152,47 @@ public object AppClassificationCatalog {
     // ==========================================
     // Financial & Banking Apps
     // ==========================================
+    public data class KnownFinancialAppProfile(
+        val category: AppCategory,
+        val contextualPermissions: Set<String> = emptySet()
+    )
+
     public val FINANCIAL_KEYWORDS: List<String> = listOf(
         "bank", "wallet", "pay", "finance", "money", "credit", "cash",
         "بنك", "مصرف", "كريمي", "فلوس", "جيب", "ون كاش", "فلوسك", "محفظة", "تداول", "حسابي", "مدى", "راجحي", "أهلي"
     )
+
+    public val KNOWN_FINANCIAL_APP_PROFILES: Map<String, KnownFinancialAppProfile> = mapOf(
+        "com.ahd.jaib" to KnownFinancialAppProfile(AppCategory.WALLET),
+        "com.one.onecustomer" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE")),
+        "com.ykb.bankylite" to KnownFinancialAppProfile(AppCategory.BANKING),
+        "com.bankylite.commercial" to KnownFinancialAppProfile(AppCategory.BANKING, setOf("android.permission.READ_PHONE_STATE")),
+        "shamil.bank.yemen.bahrain.wallet.money" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE", "android.permission.CALL_PHONE")),
+        "shamil.bank.yemen.bahrain.wallet.pos" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE", "android.permission.CALL_PHONE")),
+        "cac.mobilemoney.app" to KnownFinancialAppProfile(AppCategory.WALLET),
+        "com.mobilemoney.business" to KnownFinancialAppProfile(AppCategory.WALLET),
+        "com.s2m.yemenpost.customer.android" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.CALL_PHONE")),
+        "com.s2m.yamenpost.merchant.android" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.CALL_PHONE")),
+        "co.ysys.floosak" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.RECORD_AUDIO")),
+        "com.ama.wecashmobileapp" to KnownFinancialAppProfile(AppCategory.WALLET),
+        "com.kuraimibank" to KnownFinancialAppProfile(AppCategory.BANKING, setOf("android.permission.READ_PHONE_STATE")),
+        "wallet.mfloos.com.mflooswallet" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE")),
+        "wallet.mfloos.com.mflooswallet.customer" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE")),
+        "com.tamkeen.sms" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.RECORD_AUDIO")),
+        "com.binance.dev" to KnownFinancialAppProfile(AppCategory.WALLET, setOf("android.permission.READ_PHONE_STATE", "android.permission.RECORD_AUDIO"))
+    )
+
+    public fun getFinancialProfile(packageName: String): KnownFinancialAppProfile? =
+        KNOWN_FINANCIAL_APP_PROFILES[packageName.lowercase().trim()]
+
+    public fun getFinancialCategory(packageName: String): AppCategory? =
+        getFinancialProfile(packageName)?.category
+
+    public fun isKnownFinancialApp(packageName: String): Boolean =
+        KNOWN_FINANCIAL_APP_PROFILES.containsKey(packageName.lowercase().trim())
+
+    public fun expectsFinancialPermission(packageName: String, permission: String): Boolean =
+        getFinancialProfile(packageName)?.contextualPermissions?.contains(permission) == true
 
     // ==========================================
     // Games

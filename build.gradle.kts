@@ -5,8 +5,8 @@ plugins {
     `maven-publish`
 }
 
-group = "org.connecttag.libs.kotlin"
-version = "1.0.6"
+group = "org.connecttag.lib"
+version = "1.1.0"
 
 kotlin {
     jvmToolchain(21)

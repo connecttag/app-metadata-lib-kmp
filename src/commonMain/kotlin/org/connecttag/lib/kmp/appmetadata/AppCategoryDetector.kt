@@ -44,6 +44,10 @@ public object AppCategoryDetector {
         }
 
         // 5. Financial & Banking & Wallet
+        val exactFinancial = AppClassificationCatalog.getFinancialCategory(pkg)
+        if (exactFinancial != null) {
+            return exactFinancial
+        }
         if (isFinancialApp(pkg, label)) {
             return if (label.contains("wallet") || label.contains("محفظة") || pkg.contains("wallet")) {
                 AppCategory.WALLET
@@ -53,6 +57,9 @@ public object AppCategoryDetector {
         }
 
         // 6. Social Media & Messaging
+        // Exact catalog identities take precedence over broad package/label keywords (e.g. Facebook Messenger).
+        if (pkg in AppClassificationCatalog.MESSAGING_PACKAGES) return AppCategory.MESSAGING
+        if (pkg in AppClassificationCatalog.SOCIAL_MEDIA_PACKAGES) return AppCategory.SOCIAL_MEDIA
         if (isSocialMediaApp(pkg, label)) return AppCategory.SOCIAL_MEDIA
         if (isMessagingApp(pkg, label)) return AppCategory.MESSAGING
 
@@ -185,6 +192,7 @@ public object AppCategoryDetector {
 
     public fun isFinancialApp(packageName: String, appLabel: String? = null): Boolean {
         val pkg = packageName.lowercase()
+        if (AppClassificationCatalog.isKnownFinancialApp(pkg)) return true
         val label = appLabel?.lowercase().orEmpty()
         return AppClassificationCatalog.FINANCIAL_KEYWORDS.any {
             (label.isNotEmpty() && label.contains(it)) || pkg.contains(it)
